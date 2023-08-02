@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Text;
 using Alex.Common.Utils;
 using Alex.Common.Utils.Vectors;
 using Alex.Entities;
@@ -51,12 +52,62 @@ namespace Alex.Gui.Elements.MainMenu
 				Anchor = Alignment.Fill,
 			};
 
+
+            int MaxChars = 15;
+            string SkinName = WordWrap(skin.Name, MaxChars);
+			/*int NameLines = SkinName.Split("\n").Length;
+            if (NameLines > 2)
+			{
+				int newHeight = NameLines - 2 * 10;
+				MinHeight = newHeight;
+				MaxHeight = newHeight;
+				ModelView.Height = newHeight;
+            }*/
+
+
 			AddChild(ModelView);
 
-			AddChild(new TextElement() { Text = skin.Name, Margin = Thickness.Zero, Anchor = Alignment.BottomCenter });
+            AddChild(new TextElement() { Text = SkinName, Margin = Thickness.Zero, Anchor = Alignment.BottomCenter });
 		}
 
-		private readonly float _playerViewDepth = -512.0f;
+		private static string WordWrap(string input, int characterCount)
+        {
+            StringBuilder wrappedText = new StringBuilder();
+            StringBuilder currentLine = new StringBuilder();
+            int currentLineLength = 0;
+
+            foreach (var word in input.Split(' '))
+            {
+                int wordLength = word.Length;
+
+                if (currentLineLength + wordLength + 1 <= characterCount)
+                {
+                    // Append the word to the current line, along with a space
+                    if (currentLineLength > 0)
+                    {
+                        currentLine.Append(" ");
+                        currentLineLength++;
+                    }
+                    currentLine.Append(word);
+                    currentLineLength += wordLength;
+                }
+                else
+                {
+                    // The word doesn't fit in the current line, wrap to the next line
+                    wrappedText.AppendLine(currentLine.ToString());
+                    currentLine.Clear();
+                    currentLine.Append(word);
+                    currentLineLength = wordLength;
+                }
+            }
+
+            // Append the last line
+            wrappedText.AppendLine(currentLine.ToString());
+
+            return wrappedText.ToString().Trim();
+        }
+
+        private readonly float _playerViewDepth = -512.0f;
 
 		protected override void OnUpdate(GameTime gameTime)
 		{

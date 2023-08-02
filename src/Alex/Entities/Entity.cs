@@ -423,7 +423,8 @@ namespace Alex.Entities
 			return (modifier);
 		}
 
-		public void SetAbilityLayer(AbilityLayer layer)
+		// Commented out due to missing PlayerAbility in MiNET
+		/*public void SetAbilityLayer(AbilityLayer layer)
 		{
 			var values = layer.Values;
 			foreach (PlayerAbility ability in Enum.GetValues<PlayerAbility>())
@@ -499,7 +500,7 @@ namespace Alex.Entities
 					}
 				}
 			}
-		}
+		}*/
 
 		private bool _skipRendering = false;
 
@@ -602,10 +603,8 @@ namespace Alex.Entities
 
 			if (modelRenderer == null)
 				return null;
-
-			ModelBone arm = null;
-
-			if (modelRenderer.GetBone("rightItem", out arm) || modelRenderer.GetBone("leftItem", out arm))
+			ModelBone arm;
+            if (modelRenderer.GetBone("rightItem", out arm) || modelRenderer.GetBone("leftItem", out arm))
 			{
 				return arm;
 			}

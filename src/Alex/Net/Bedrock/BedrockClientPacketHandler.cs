@@ -417,7 +417,7 @@ namespace Alex.Net.Bedrock
 					remotePlayer.HandleMetadata(message.metadata);
 				}
 
-				HandleAbilityLayers(remotePlayer, message.layers);
+				//HandleAbilityLayers(remotePlayer, message.layers);
 				//TODO: Fix adventure flags
 				//UpdateEntityAdventureFlags(
 				//	remotePlayer, message.flags, message.actionPermissions, message.commandPermission,
@@ -793,8 +793,9 @@ namespace Alex.Net.Bedrock
 			Client.DimensionDefinitions = message.definitions;
 		}
 
-		/// <inheritdoc />
-		public void HandleMcpeUpdateAbilities(McpeUpdateAbilities message)
+        /// <inheritdoc />
+        /// Unknown McpeUpdateAbilities
+        /*public void HandleMcpeUpdateAbilities(McpeUpdateAbilities message)
 		{
 			var userId = BinaryPrimitives.ReverseEndianness(message.entityUniqueId);
 			var player = Client.World.Player;
@@ -804,23 +805,25 @@ namespace Alex.Net.Bedrock
 			}
 			//TODO: Implement update abilities
 			UnhandledPackage(message);
-		}
+		}*/
 
-		private void HandleAbilityLayers(Entity entity, AbilityLayers layers)
+        // Unknown AbilityLayers & SetAbilityLayer
+        /*private void HandleAbilityLayers(Entity entity, AbilityLayers layers)
 		{
 			foreach (var layer in layers)
 			{
 				entity.SetAbilityLayer(layer);
 			}
-		}
+		}*/
 
-		/// <inheritdoc />
-		public void HandleMcpeUpdateAdventureSettings(McpeUpdateAdventureSettings message)
+        /// <inheritdoc />
+        /// Unknown McpeUpdateAdventureSettings
+        /*public void HandleMcpeUpdateAdventureSettings(McpeUpdateAdventureSettings message)
 		{
 			var player = Client.World.Player;
 			player.IsNoPvM = message.noPvm;
 			player.IsWorldImmutable = message.immutableWorld;
-		}
+		}*/
 
 		/// <inheritdoc />
 		public void HandleMcpeAlexEntityAnimation(McpeAlexEntityAnimation message) { }

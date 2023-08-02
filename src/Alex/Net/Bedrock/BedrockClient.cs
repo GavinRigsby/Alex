@@ -857,7 +857,8 @@ namespace Alex.Net.Bedrock
 			SendPacket(settings);
 		}
 
-		public void RequestAbility(PlayerAbility ability, object value)
+        // Commented out due to missing McpeRequestAbility
+        /*public void RequestAbility(PlayerAbility ability, object value)
 		{
 			if (value is not bool or float)
 				throw new InvalidOperationException("Invalid value type, expected bool or float");
@@ -866,9 +867,9 @@ namespace Alex.Net.Bedrock
 			request.ability = (int)ability;
 			request.Value = value;
 			SendPacket(request);
-		}
-		
-		public override bool EntityAction(int entityId, EntityAction action)
+		}*/
+
+        public override bool EntityAction(int entityId, EntityAction action)
 		{
 			BlockCoordinates? coordinates = null;
 
@@ -883,14 +884,16 @@ namespace Alex.Net.Bedrock
 			{
 				case Common.Utils.EntityAction.StartFlying:
 					SendAdventureFlags();
-					RequestAbility(PlayerAbility.Flying, true);
-					return true;
+                    // Unknown RequestAbility & PlayerAbility
+                    //RequestAbility(PlayerAbility.Flying, true);
+                    return true;
 
 				case Common.Utils.EntityAction.StopFlying:
 					SendAdventureFlags();
-					RequestAbility(PlayerAbility.Flying, false);
+                    // Unknown RequestAbility & PlayerAbility
+                    //RequestAbility(PlayerAbility.Flying, false);
 
-					return true;
+                    return true;
 
 				case Common.Utils.EntityAction.StartSwimming:
 					translated = PlayerAction.StartSwimming;

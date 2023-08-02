@@ -151,9 +151,15 @@
 
     <Import Project="$(MSBuildThisFileDirectory)/../../submodules/RocketUI/src/RocketUI/RocketUI.targets" />
 
+    <Target Name="AfterBuild">
+        <ItemGroup>
+            <SourceFiles Include="$(ProjectDir)Audio\binaries\$(OS)-$(Platform)\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(TargetDir)" />
+    </Target>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy /s /y &quot;$(ProjectDir)Audio\binaries\$(OSArchitecture)\*&quot; &quot;$(TargetDir)&quot;" />
+      <Exec Command="echo '/s /y &quot;$(ProjectDir)src\Alex\Audio\binaries\$(OSArchitecture)\*&quot; &quot;$(TargetDir)&quot;' &gt; outfile.txt " />
     </Target>
 
 

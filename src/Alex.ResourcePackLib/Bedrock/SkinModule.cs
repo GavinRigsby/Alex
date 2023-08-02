@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Resources;
 using Alex.Interfaces.Resources;
 using Alex.ResourcePackLib.Abstraction;
+using Alex.ResourcePackLib.IO;
 using Alex.ResourcePackLib.IO.Abstract;
 using Alex.ResourcePackLib.Json;
 using Alex.ResourcePackLib.Json.Bedrock;
@@ -48,14 +51,58 @@ namespace Alex.ResourcePackLib.Bedrock
 
 				//using (var archive = new ZipFileSystem(Entry.Open(), Entry.Name))
 				{
-					var skinsEntry = archive.GetEntry("skins.json");
+					var skinsEntry = base.SearchEntry("skins.json");
 
 					if (skinsEntry == null)
 						return false;
 
 					Info = MCJsonConvert.DeserializeObject<MCPackSkins>(skinsEntry.ReadAsString());
 
-					var geometryEntry = archive.GetEntry("geometry.json");
+					// check for language file
+                    var textEntry = base.SearchEntry("en_US.lang");
+
+                    if (textEntry != null)
+					{
+						string[] skinNames = textEntry.ReadAsString().Split(Environment.NewLine);
+						Dictionary<string, string> skinDict = new Dictionary<string, string>();
+						foreach(var skinName in skinNames)
+						{
+							try
+                            {
+                                string[] stringDict = skinName.Split("=");
+                                skinDict.Add(stringDict[0], stringDict[1]);
+                            }
+							catch (Exception e) { }
+                        }
+
+						
+						foreach (SkinEntry skinEntry in Info.Skins)
+						{
+							if (skinDict.TryGetValue($"skin.{Name}.{skinEntry.LocalizationName}", out var skin))
+							{
+								skinEntry.LocalizationName = skin;
+							}
+							else
+							{
+								skinEntry.LocalizationName = skinEntry.LocalizationName.Replace("_", " ");
+							}
+						}
+					}
+
+
+                    IFile geometryEntry = null;
+
+                    try
+					{
+						geometryEntry = base.SearchEntry("geometry.json");
+                    }
+					catch (Exception ex)
+					{
+						if (!ex.Message.Contains("No entry"))
+						{
+							throw ex;
+						}
+					}
 
 					if (geometryEntry != null)
 					{
@@ -99,19 +146,38 @@ namespace Alex.ResourcePackLib.Bedrock
 		public bool TryGetBitmap(ResourceLocation textureName, out Image<Rgba32> bitmap)
 		{
 			bitmap = null;
-			var textureEntry = Entry.GetEntry(textureName.Path);
+			var textureEntry = base.SearchEntry(textureName.Path);
+
 
 			if (textureEntry == null)
 				return false;
 
-			Image<Rgba32> img;
+			Image<Rgba32> img = null;
 
-			using (var s = textureEntry.Open())
+			try
 			{
-				//img = new Bitmap(s);
-				img = Image.Load<Rgba32>(s.ReadToSpan(textureEntry.Length), PngDecoder);
+                using (Stream s = textureEntry.Open())
+                {
+                    //img = new Bitmap(s);
+                    img = Image.Load<Rgba32>(s.ReadToSpan(textureEntry.Length), PngDecoder);
+                }
 			}
-
+			catch (Exception e)
+            {
+                /*using (var archive = new ZipFileSystem(File.Open(archivePath, FileMode.Open, FileAccess.Read), textureName.Path))
+                {
+                    using (Stream s = textureEntry.Open())
+                    {
+                        //img = new Bitmap(s);
+                        img = Image.Load<Rgba32>(s.ReadToSpan(textureEntry.Length), PngDecoder);
+                    }
+                }*/
+            }
+			
+			if (img == null)
+			{
+				return false;
+			}
 			bitmap = img;
 
 			return true;

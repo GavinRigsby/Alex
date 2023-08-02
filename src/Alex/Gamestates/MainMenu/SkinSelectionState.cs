@@ -76,7 +76,7 @@ namespace Alex.Gamestates.MainMenu
 				{
 					//row.ChildAnchor = Alignment.BottomCenter;
 					row.AddChild(new AlexButton("Previous Page", PrevPage, false).ApplyModernStyle());
-					row.AddChild(new AlexButton("Open SkinPack folder", OpenSkinPackFOlder, false).ApplyModernStyle());
+					row.AddChild(new AlexButton("Open SkinPack folder", OpenSkinPackFolder, false).ApplyModernStyle());
 					row.AddChild(new AlexButton("Next Page", NextPage, false).ApplyModernStyle());
 				});
 
@@ -93,7 +93,7 @@ namespace Alex.Gamestates.MainMenu
 			LoadItems(_start + _count, _count);
 		}
 
-		private void OpenSkinPackFOlder()
+		private void OpenSkinPackFolder()
 		{
 			CrossPlatformUtils.OpenFolder(Alex.Resources.SkinPackDirectory.ToString());
 		}
@@ -165,6 +165,7 @@ namespace Alex.Gamestates.MainMenu
 
 			var row = CreateRow();
 
+			// Model Geometry and Resoultion Set
 			if (Alex.PlayerModel != null && Alex.PlayerTexture != null)
 			{
 				// Alex.UiTaskManager.Enqueue(
@@ -210,7 +211,8 @@ namespace Alex.Gamestates.MainMenu
 
 						if (ModelFactory.TryGetModel(skin.Geometry, out var model) && model != null)
 						{
-							if (module.TryGetBitmap(skin.Texture, out var bmp))
+                            //skinPack.PackPath,
+                            if (module.TryGetBitmap( skin.Texture, out var bmp))
 							{
 								SkinSelectionEntry selectionEntry = new SkinSelectionEntry(
 									new LoadedSkin(skin.LocalizationName, model, bmp), OnDoubleClick);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using Alex.ResourcePackLib.Bedrock;
 using Alex.ResourcePackLib.Exceptions;
 using Alex.ResourcePackLib.IO.Abstract;
@@ -26,15 +27,23 @@ namespace Alex.ResourcePackLib
 
 		private void Load(IFilesystem archive)
 		{
-			var manifestEntry = archive.GetEntry("manifest.json");
+			// Fix nested directory issue
+            var manifestEntries = archive.Entries.Where(e => e.Name == "manifest.json");
 			//var contentEntry  = archive.GetEntry("content.zipe");
 
-			if (manifestEntry == null)
+			if (manifestEntries == null)
 			{
 				throw new InvalidMCPackException("No manifest found!");
 			}
 
-			Manifest = MCJsonConvert.DeserializeObject<McPackManifest>(manifestEntry.ReadAsString());
+            if (manifestEntries.Count() > 1)
+            {
+                throw new InvalidMCPackException("Multiple manifests found!");
+            }
+
+			var manifestEntry = manifestEntries.First();
+
+            Manifest = MCJsonConvert.DeserializeObject<McPackManifest>(manifestEntry.ReadAsString());
 
 			//if (contentEntry == null)
 			//{

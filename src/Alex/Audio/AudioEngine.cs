@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Alex.Common.Services;
 using Alex.Common.Utils;
 using Alex.Interfaces;
@@ -38,6 +39,7 @@ namespace Alex.Audio
 
 		public AudioEngine(IStorageSystem storageSystem, IOptionsProvider optionsProvider)
 		{
+			//LoadAudioLib();
 			StorageSystem = storageSystem;
 			StoragePath = Path.Combine("assets", "bedrock");
 			OptionsProvider = optionsProvider;

@@ -978,22 +978,21 @@ namespace Alex
 		{
 			progressReceiver?.UpdateProgress(0, "Loading bedrock .MCPack files...");
 
+			// Open Bedrock Packs if they are zipped/packaged
 			var files = directoryInfo.EnumerateFiles().Where(x => _bedrockSearchPattern.IsMatch(x.Name)).ToArray();
 
 			for (var index = 0; index < files.Length; index++)
 			{
 				var file = files[index];
 
-				progressReceiver?.UpdateProgress(
-					index, files.Length, "Loading bedrock resourcepack files...", file.Name);
+				progressReceiver?.UpdateProgress(index, files.Length, "Loading bedrock resourcepack files...", file.Name);
 
 				try
 				{
-					using (var archive = new ZipFileSystem(file.Open(FileMode.Open, FileAccess.Read), file.Name))
-					{
-						MCPack pack = new MCPack(archive);
-						SkinPacks.Add(pack);
-					}
+					var archive = new ZipFileSystem(file.Open(FileMode.Open, FileAccess.Read), file.Name);
+					MCPack pack = new MCPack(archive);
+					SkinPacks.Add(pack);
+					
 				}
 				catch (Exception ex)
 				{
